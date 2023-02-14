@@ -208,3 +208,21 @@ const saveEdit = (e) => {
   SubmitButton.setAttribute("data-bs-target", "#ShowTask");
   SubmitButton.innerHTML = "OpenTask";
 };
+
+const searchTask = (e) => {
+  if (!e) e = window.event;
+
+  while (taskContents.firstChild) {
+    taskContents.removeChild(taskContents.firstChild);
+  }
+
+  const resultData = state.taskList.filter(({ title }) => {
+    return title.toLowerCase().includes(e.target.value.toLowerCase());
+  });
+
+  console.log(resultData);
+
+  resultData.map((cardData) => {
+    taskContents.insertAdjacentHTML("beforeend", htmlTaskContent(cardData));
+  });
+};

@@ -158,18 +158,6 @@
         </div>
       </div>
 
-      <!-- Bottom button for below 900px -->
-      <div class="add__new__btn__mobile__only">
-        <button
-          class="btn btn-primary d-flex align-items-center gap-2"
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#adding__tasks"
-        >
-          <i class="fa-solid fa-plus"></i>Add More
-        </button>
-      </div>
-
       <!-- NAVBAR -->
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
@@ -220,6 +208,7 @@
                   placeholder="Search Task..."
                   aria-label="Search Task"
                   aria-describedby="addon-wrapping"
+                  oninput="searchTask.apply(this, arguments)"
                 />
                 <button
                   class="btn btn-outline-secondary"
@@ -237,6 +226,18 @@
         <section class="mt-4">
           <div class="row task__contents"></div>
         </section>
+      </div>
+
+      <!-- Bottom button for below 900px -->
+      <div class="add__new__btn__mobile__only">
+        <button
+          class="btn btn-primary d-flex align-items-center gap-2"
+          type="button"
+          data-bs-toggle="modal"
+          data-bs-target="#adding__tasks"
+        >
+          <i class="fa-solid fa-plus"></i>Add More
+        </button>
       </div>
 
       <script
