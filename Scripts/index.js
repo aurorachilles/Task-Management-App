@@ -226,3 +226,9 @@ const searchTask = (e) => {
     taskContents.insertAdjacentHTML("beforeend", htmlTaskContent(cardData));
   });
 };
+
+const resetForm = (e) => {
+  if (!e) e = window.event;
+
+  document.getElementById("FormforSub").reset();
+};

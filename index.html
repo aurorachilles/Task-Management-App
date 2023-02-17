@@ -50,7 +50,7 @@
             </div>
             <div class="modal-body">
               <!-- FORM -->
-              <form onsubmit="return false">
+              <form onsubmit="return false" id="FormforSub">
                 <div class="mb-3">
                   <label for="imageUrl" class="form-label">Image URL</label>
                   <input
@@ -107,7 +107,7 @@
                     <button
                       type="button"
                       class="btn btn-primary"
-                      onclick="HandleSubmit()"
+                      onclick="HandleSubmit();resetForm().apply(this, arguments)"
                     >
                       Save changes
                     </button>
