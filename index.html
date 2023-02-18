@@ -157,6 +157,107 @@
           </div>
         </div>
       </div>
+      <!-- Modal for Edit -->
+      <div
+        class="modal fade"
+        id="edit__tasks"
+        tabindex="-1"
+        data-bs-backdrop="static"
+        aria-labelledby="Edit Current Task"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="editing__tasks">
+                Edit Current Task
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <!-- FORM -->
+              <form onsubmit="return false" id="FormforEdit" method="">
+                <div class="mb-3">
+                  <label for="imageUrl" class="form-label">New Image URL</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="url_edit"
+                    placeholder="http://example.com/image.png"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="taskTitle" class="form-label"
+                    >New Task Title</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="taskTitle_edit"
+                    placeholder="Learn Web Development"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="tags" class="form-label">New Task Type</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="tags_edit"
+                    placeholder="Work"
+                    required
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="taskDesc" class="form-label"
+                    >New Task Description</label
+                  >
+                  <textarea
+                    type="text"
+                    class="form-control"
+                    id="taskDesc_edit"
+                    placeholder="Explain the task..."
+                    rows="4"
+                  >
+                  </textarea>
+
+                  <div
+                    class="modal-footer justify-content-start"
+                    style="
+                      padding-left: 0px;
+                      padding-bottom: 0px;
+                      padding-top: 20px;
+                    "
+                  >
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      id="editButtonSubmit"
+                    >
+                      Save changes
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Don't' Save Changes
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- NAVBAR -->
       <nav class="navbar navbar-expand-lg bg-body-tertiary">

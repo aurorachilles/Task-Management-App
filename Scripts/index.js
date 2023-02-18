@@ -11,7 +11,8 @@ const htmlTaskContent = ({ id, title, description, type, url }) => `
     <div class='col-md-6 col-lg-4 mt-3' id=${id} key=${id}>
         <div class='card shadow-sm task__card'>
             <div class='card-header d-flex justify-content-end task__card__header gap-1'>
-                <button type='button' class='btn btn-outline-info mr-2' name=${id} onclick='editTasks.apply(this, arguments)'> 
+                <button type='button' class='btn btn-outline-info mr-2' name=${id} data-bs-toggle='modal'
+                data-bs-target='#edit__tasks' onclick='openingEditTask.apply(this, arguments)'> 
                     <i class='fa-solid fa-pencil' name=${id}></i>
                 </button>
                 <button type='button' class='btn btn-outline-danger mr-2' name=${id} onclick='deleteTask.apply(this, arguments)'> 
@@ -82,6 +83,8 @@ const loadInitialData = () => {
   });
 };
 
+// FORM SUBMIT
+
 const HandleSubmit = (event) => {
   const id = `${Date.now()}`;
   const input = {
@@ -114,6 +117,8 @@ const openTask = (e) => {
   taskModal.innerHTML = htmlModalContent(getTask);
 };
 
+// DELETE FUNCTION
+
 const deleteTask = (e) => {
   if (!e) e = window.event;
 
@@ -133,6 +138,8 @@ const deleteTask = (e) => {
     e.target.parentNode.parentNode.parentNode.parentNode
   );
 };
+
+// OLD EDIT
 
 const editTasks = (e) => {
   const targetId = e.target.id;
@@ -209,6 +216,8 @@ const saveEdit = (e) => {
   SubmitButton.innerHTML = "OpenTask";
 };
 
+// SEARCH FUNCTION
+
 const searchTask = (e) => {
   if (!e) e = window.event;
 
@@ -227,8 +236,83 @@ const searchTask = (e) => {
   });
 };
 
+// CODE FOR RESETTINGFORM
+
 const resetForm = (e) => {
   if (!e) e = window.event;
 
   document.getElementById("FormforSub").reset();
+};
+
+// BELOW IS THE CODE WRITTEN FOR MODIFIED EDIT
+
+const openingEditTask = (e) => {
+  if (!e) e = window.event;
+
+  const targetid = state.taskList.find(
+    ({ id }) => id === e.target.getAttribute("name")
+  );
+  const formEdit = document.getElementById("FormforEdit");
+
+  formEdit.childNodes[1].childNodes[3].value = targetid.url;
+  formEdit.childNodes[3].childNodes[3].value = targetid.title;
+  formEdit.childNodes[5].childNodes[3].value = targetid.type;
+  formEdit.childNodes[7].childNodes[3].value = targetid.description;
+
+  const butt = (document.getElementById("editButtonSubmit").onclick =
+    function () {
+      SaveChanges(targetid);
+    });
+};
+
+const SaveChanges = (targetid) => {
+  const formEdit = document.getElementById("FormforEdit");
+  let StateCopy = state.taskList;
+  console.log(StateCopy);
+  if (document.getElementById("url_edit") !== "") {
+    const updatedinput = {
+      urlUp: document.getElementById("url_edit").value,
+      titleUp: document.getElementById("taskTitle_edit").value,
+      descriptionUp: document.getElementById("taskDesc_edit").value,
+      typeUp: document.getElementById("tags_edit").value,
+    };
+
+    StateCopy = StateCopy.map((tasks) =>
+      tasks.id === targetid.id
+        ? {
+            id: tasks.id,
+            title: updatedinput.titleUp,
+            description: updatedinput.descriptionUp,
+            type: updatedinput.typeUp,
+            url: updatedinput.urlUp,
+          }
+        : tasks
+    );
+    console.log(updatedinput);
+    console.log("url");
+  } else {
+    const updatedinput = {
+      titleUp: document.getElementById("taskTitle_edit").value,
+      descriptionUp: document.getElementById("taskDesc_edit").value,
+      typeUp: document.getElementById("tags_edit").value,
+    };
+
+    StateCopy = StateCopy.map((tasks) =>
+      tasks.id === targetid.id
+        ? {
+            id: tasks.id,
+            title: updatedinput.titleUp,
+            description: updatedinput.descriptionUp,
+            type: updatedinput.typeUp,
+            url: tasks.url,
+          }
+        : tasks
+    );
+    console.log(updatedinput);
+    console.log("No url");
+  }
+
+  state.taskList = StateCopy;
+  updateLocalStorage();
+  location.reload();
 };
