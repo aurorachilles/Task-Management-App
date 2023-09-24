@@ -100,14 +100,16 @@ const HandleSubmit = (event) => {
     return alert("Please fill all the fields!");
   }
 
-  taskContents.insertAdjacentHTML(
-    "beforeend",
-    htmlTaskContent({
-      ...input,
-      id,
-    })
-  );
+  //This thing is basically simultanelously pushing the modal on screen as we add it.
+  // taskContents.insertAdjacentHTML(
+  //   "beforeend",
+  //   htmlTaskContent({
+  //     ...input,
+  //     id,
+  //   })
+  // );
 
+  //This is basically updating the main table
   state.taskList.push({ ...input, id });
   updateLocalStorage();
 };
