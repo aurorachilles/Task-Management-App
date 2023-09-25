@@ -101,13 +101,13 @@ const HandleSubmit = (event) => {
   }
 
   //This thing is basically simultanelously pushing the modal on screen as we add it.
-  // taskContents.insertAdjacentHTML(
-  //   "beforeend",
-  //   htmlTaskContent({
-  //     ...input,
-  //     id,
-  //   })
-  // );
+  taskContents.insertAdjacentHTML(
+    "beforeend",
+    htmlTaskContent({
+      ...input,
+      id,
+    })
+  );
 
   //This is basically updating the main table
   state.taskList.push({ ...input, id });
