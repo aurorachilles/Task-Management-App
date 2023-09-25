@@ -75,6 +75,7 @@ const updateLocalStorage = () => {
 };
 
 const loadInitialData = () => {
+  //initial
   const LocalStorageCopy = JSON.parse(localStorage.tasks); //this function can be used to directly fetch and convert data from cloud0
   if (LocalStorageCopy) state.taskList = LocalStorageCopy.tasks;
 
@@ -83,6 +84,26 @@ const loadInitialData = () => {
   });
 
   console.log(localStorage.tasks);
+};
+
+const loadfromAWS = () => {
+  fetch(
+    "https://nij8z6ztle.execute-api.ap-south-1.amazonaws.com/Post_Initial_test"
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      const LocalStorageCopy = data; //this function can be used to directly fetch and convert data from cloud0
+      if (LocalStorageCopy) state.taskList = LocalStorageCopy.tasks;
+
+      state.taskList.map((cardDate) => {
+        taskContents.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
+      });
+
+      //DEBUG OPTIONS
+      // console.log(localStorage.tasks);
+      //console.log(LocalStorageCopy);
+      //console.log(data);
+    });
 };
 
 // FORM SUBMIT
