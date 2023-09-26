@@ -74,6 +74,27 @@ const updateLocalStorage = () => {
   );
 };
 
+const postIntoAWS = (obj) => {
+  const requestHeaders = {
+    method: "POST",
+    headers: {},
+    body: obj,
+  };
+  console.log(requestHeaders);
+  fetch(
+    "https://nij8z6ztle.execute-api.ap-south-1.amazonaws.com/Post_Initial_test",
+    requestHeaders
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data).catch((err) => {
+        console.error("Fetch error:", err);
+      });
+    });
+};
+
+const deleteIntoAWS = () => {};
+
 const loadInitialData = () => {
   //initial
   const LocalStorageCopy = JSON.parse(localStorage.tasks); //this function can be used to directly fetch and convert data from cloud0
@@ -92,7 +113,7 @@ const loadfromAWS = () => {
   )
     .then((response) => response.json())
     .then((data) => {
-      const LocalStorageCopy = data; //this function can be used to directly fetch and convert data from cloud0
+      const LocalStorageCopy = data;
       if (LocalStorageCopy) state.taskList = LocalStorageCopy.tasks;
 
       state.taskList.map((cardDate) => {
@@ -132,7 +153,11 @@ const HandleSubmit = (event) => {
 
   //This is basically updating the main table
   state.taskList.push({ ...input, id });
-  updateLocalStorage();
+
+  //creating a function to push into aws
+  const pushing = { ...input, id };
+  postIntoAWS(pushing);
+  //updateLocalStorage();
 };
 
 const openTask = (e) => {
