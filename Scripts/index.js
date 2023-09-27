@@ -7,7 +7,13 @@ const state = {
 const taskContents = document.querySelector(".task__contents");
 const taskModal = document.querySelector(".task__modal__of__body");
 
-const htmlTaskContent = ({ id, title, description, type, url }) => `
+const htmlTaskContent = ({
+  id,
+  task_title,
+  task_desc,
+  task_type,
+  task_url,
+}) => `
     <div class='col-md-6 col-lg-4 mt-3' id=${id} key=${id}>
         <div class='card shadow-sm task__card'>
             <div class='card-header d-flex justify-content-end task__card__header gap-1'>
@@ -21,14 +27,14 @@ const htmlTaskContent = ({ id, title, description, type, url }) => `
             </div>
             <div class='card-body'>
                 ${
-                  url
-                    ? `<img width='100%' src=${url} alt='card image cap' class='card-image-top md-3 rounded-lg' />`
+                  task_url
+                    ? `<img width='100%' src=${task_url} alt='card image cap' class='card-image-top md-3 rounded-lg' />`
                     : `<img width='100%' src="https://kctbs.ac.in/wp-content/uploads/2014/11/default-placeholder.png " alt='card image cap' class='card-image-top md-3 rounded-lg' /> `
                 }
-                <h4 class='task__card__title'>${title}</h4>
-                <p class='decription trim-3-lines text-muted' data-gram_editor='false'>${description}</p>
+                <h4 class='task__card__title'>${task_title}</h4>
+                <p class='decription trim-3-lines text-muted' data-gram_editor='false'>${task_desc}</p>
                 <div class='tags text-white d-flex flex-wrap'>
-                    <span class='badge bg-primary m-1'>${type}</span>
+                    <span class='badge bg-primary m-1'>${task_type}</span>
                 </div>
             </div>
             <div class='card-footer'>
@@ -46,19 +52,19 @@ const htmlTaskContent = ({ id, title, description, type, url }) => `
     </div>
 `;
 
-const htmlModalContent = ({ id, title, description, url }) => {
+const htmlModalContent = ({ id, task_title, task_desc, task_url }) => {
   const date = new Date(parseInt(id));
   return `
     <div id=${id}>
       ${
-        url
-          ? `<img width='100%' src=${url} alt='card image cap' class='card-image-top md-3 rounded-lg' />`
+        task_url
+          ? `<img width='100%' src=${task_url} alt='card image cap' class='card-image-top md-3 rounded-lg' />`
           : `<img width='100%' src="https://kctbs.ac.in/wp-content/uploads/2014/11/default-placeholder.png " alt='card image cap' class='card-image-top md-3 rounded-lg' /> `
       }
         <strong class='text-sm text-muted font-monospace'>Created on ${date.toDateString()}</strong>
-        <h2 class='my-3'>${title}</h2>
+        <h2 class='my-3'>${task_title}</h2>
         <p class='lead'>
-            ${description}    
+            ${task_desc}    
         </p>
     </div>
 
@@ -86,6 +92,7 @@ const postIntoAWS = (obj) => {
   )
     .then((response) => response.json())
     .then((data) => {
+      console.log("pushed0");
       console.log(data).catch((err) => {
         console.error("Fetch error:", err);
       });
@@ -130,8 +137,8 @@ const loadfromAWS = () => {
     .then((data) => {
       const LocalStorageCopy = data;
       if (LocalStorageCopy) state.taskList = LocalStorageCopy.tasks;
-
       state.taskList.map((cardDate) => {
+        console.log(cardDate);
         taskContents.insertAdjacentHTML("beforeend", htmlTaskContent(cardDate));
       });
 
@@ -147,13 +154,17 @@ const loadfromAWS = () => {
 const HandleSubmit = (event) => {
   const id = `${Date.now()}`;
   const input = {
-    url: document.getElementById("imageUrl").value,
-    title: document.getElementById("taskTitle").value,
-    description: document.getElementById("taskDesc").value,
-    type: document.getElementById("tags").value,
+    task_url: document.getElementById("imageUrl").value,
+    task_title: document.getElementById("taskTitle").value,
+    task_desc: document.getElementById("taskDesc").value,
+    task_type: document.getElementById("tags").value,
   };
 
-  if (input.title === "" || input.description === "" || input.type === "") {
+  if (
+    input.task_title === "" ||
+    input.task_desc === "" ||
+    input.task_type === ""
+  ) {
     return alert("Please fill all the fields!");
   }
 
@@ -205,7 +216,6 @@ const deleteTask = (e) => {
 };
 
 // OLD EDIT
-
 const editTasks = (e) => {
   const targetId = e.target.id;
   const typeofbut = e.target.tagName;
@@ -237,6 +247,7 @@ const editTasks = (e) => {
   SubmitButton.innerHTML = "Save Changes";
 };
 
+//OLD SAVE EDIT
 const saveEdit = (e) => {
   if (!e) e = window.event;
 
@@ -282,7 +293,6 @@ const saveEdit = (e) => {
 };
 
 // SEARCH FUNCTION
-
 const searchTask = (e) => {
   if (!e) e = window.event;
 
@@ -301,8 +311,26 @@ const searchTask = (e) => {
   });
 };
 
-// CODE FOR RESETTINGFORM
+const updateAWS = (obj) => {
+  const requestHeaders = {
+    method: "PUT",
+    body: JSON.stringify(obj),
+  };
+  console.log(requestHeaders);
+  fetch(
+    "https://nij8z6ztle.execute-api.ap-south-1.amazonaws.com/Post_Initial_test",
+    requestHeaders
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("updated");
+      console.log(data).catch((err) => {
+        console.error("Fetch error:", err);
+      });
+    });
+};
 
+// CODE FOR RESETTINGFORM
 const resetForm = (e) => {
   if (!e) e = window.event;
 
@@ -310,11 +338,11 @@ const resetForm = (e) => {
 };
 
 // BELOW IS THE CODE WRITTEN FOR MODIFIED EDIT
-
 const openingEditTask = (e) => {
   if (!e) e = window.event;
 
   const targetid = state.taskList.find(
+    //this fetches the data saved in cloud and matches it
     ({ id }) => id === e.target.getAttribute("name")
   );
   const formEdit = document.getElementById("FormforEdit");
@@ -331,21 +359,23 @@ const openingEditTask = (e) => {
     });
 };
 
+//save channges button
 const SaveChanges = (targetid) => {
   const formEdit = document.getElementById("FormforEdit");
   let StateCopy = state.taskList;
-  console.log(StateCopy);
-
+  //console.log(StateCopy);  //testing
+  let passable = {};
   //this part basically reads the edited fields and forms a JSON
   //if statement is present to either pick or drop the URL
   if (document.getElementById("url_edit") !== "") {
     const updatedinput = {
-      urlUp: document.getElementById("url_edit").value,
-      titleUp: document.getElementById("taskTitle_edit").value,
-      descriptionUp: document.getElementById("taskDesc_edit").value,
-      typeUp: document.getElementById("tags_edit").value,
+      task_url: document.getElementById("url_edit").value,
+      task_title: document.getElementById("taskTitle_edit").value,
+      task_desc: document.getElementById("taskDesc_edit").value,
+      task_type: document.getElementById("tags_edit").value,
     };
 
+    passable = { ...updatedinput, id };
     //a mapping function that matches the passes modal target id and list tasks to map and update the values simultatneously
     StateCopy = StateCopy.map(
       (tasks) =>
@@ -364,11 +394,12 @@ const SaveChanges = (targetid) => {
     console.log("url");
   } else {
     const updatedinput = {
-      titleUp: document.getElementById("taskTitle_edit").value,
-      descriptionUp: document.getElementById("taskDesc_edit").value,
-      typeUp: document.getElementById("tags_edit").value,
+      task_title: document.getElementById("taskTitle_edit").value,
+      task_desc: document.getElementById("taskDesc_edit").value,
+      task_type: document.getElementById("tags_edit").value,
     };
 
+    passable = { ...updatedinput, id };
     StateCopy = StateCopy.map((tasks) =>
       tasks.id === targetid.id
         ? {
@@ -383,8 +414,10 @@ const SaveChanges = (targetid) => {
     console.log(updatedinput);
     console.log("No url");
   }
-
+  const url = "";
+  passable = { ...passable, url };
   state.taskList = StateCopy;
-  updateLocalStorage();
+  updateAWS(passable);
+  // updateLocalStorage();
   location.reload();
 };

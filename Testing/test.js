@@ -16,10 +16,11 @@ const input = {
   type: "aaa",
 };
 
-const ss = { ...input, id };
-
+var ss = { ...input, id };
+const zz = "aaa";
 const test = (obj) => {
   console.log(obj);
 };
 
+ss = { zz };
 test(ss);
