@@ -150,7 +150,6 @@ const loadfromAWS = () => {
 };
 
 // FORM SUBMIT
-
 const HandleSubmit = (event) => {
   const id = `${Date.now()}`;
   const input = {
@@ -347,10 +346,10 @@ const openingEditTask = (e) => {
   );
   const formEdit = document.getElementById("FormforEdit");
   //This basically fetches the already typed values in the field
-  formEdit.childNodes[1].childNodes[3].value = targetid.url;
-  formEdit.childNodes[3].childNodes[3].value = targetid.title;
-  formEdit.childNodes[5].childNodes[3].value = targetid.type;
-  formEdit.childNodes[7].childNodes[3].value = targetid.description;
+  formEdit.childNodes[1].childNodes[3].value = targetid.task_url;
+  formEdit.childNodes[3].childNodes[3].value = targetid.task_title;
+  formEdit.childNodes[5].childNodes[3].value = targetid.task_type;
+  formEdit.childNodes[7].childNodes[3].value = targetid.task_desc;
 
   //calling this function to save the changes that are being typed in the field
   const butt = (document.getElementById("editButtonSubmit").onclick =
@@ -364,7 +363,7 @@ const SaveChanges = (targetid) => {
   const formEdit = document.getElementById("FormforEdit");
   let StateCopy = state.taskList;
   //console.log(StateCopy);  //testing
-  let passable = {};
+  let passable = { id: targetid.id };
   //this part basically reads the edited fields and forms a JSON
   //if statement is present to either pick or drop the URL
   if (document.getElementById("url_edit") !== "") {
@@ -375,17 +374,17 @@ const SaveChanges = (targetid) => {
       task_type: document.getElementById("tags_edit").value,
     };
 
-    passable = { ...updatedinput, id };
+    passable = { ...passable, ...updatedinput };
     //a mapping function that matches the passes modal target id and list tasks to map and update the values simultatneously
     StateCopy = StateCopy.map(
       (tasks) =>
         tasks.id === targetid.id
           ? {
               id: tasks.id,
-              title: updatedinput.titleUp,
-              description: updatedinput.descriptionUp,
-              type: updatedinput.typeUp,
-              url: updatedinput.urlUp,
+              task_title: updatedinput.task_title,
+              task_desc: updatedinput.task_desc,
+              task_type: updatedinput.task_type,
+              task_url: updatedinput.task_url,
             }
           : tasks
       // above, if the target id matches? make update: don't
@@ -399,24 +398,25 @@ const SaveChanges = (targetid) => {
       task_type: document.getElementById("tags_edit").value,
     };
 
-    passable = { ...updatedinput, id };
+    passable = { ...passable, ...updatedinput };
     StateCopy = StateCopy.map((tasks) =>
       tasks.id === targetid.id
         ? {
             id: tasks.id,
-            title: updatedinput.titleUp,
-            description: updatedinput.descriptionUp,
-            type: updatedinput.typeUp,
-            url: tasks.url,
+            task_title: updatedinput.task_title,
+            task_desc: updatedinput.task_desc,
+            task_type: updatedinput.task_type,
+            task_url: tasks.task_url,
           }
         : tasks
     );
     console.log(updatedinput);
     console.log("No url");
   }
-  const url = "";
-  passable = { ...passable, url };
+  const task_url = "";
+  passable = { ...passable, task_url };
   state.taskList = StateCopy;
+
   updateAWS(passable);
   // updateLocalStorage();
   location.reload();
