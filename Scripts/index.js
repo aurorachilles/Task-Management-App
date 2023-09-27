@@ -329,6 +329,13 @@ const updateAWS = (obj) => {
     });
 };
 
+async function reload_resolver(obj) {
+  let updateprom = new Promise(function res() {
+    updateAWS(obj);
+    resolve("returned");
+  });
+}
+
 // CODE FOR RESETTINGFORM
 const resetForm = (e) => {
   if (!e) e = window.event;
@@ -413,11 +420,13 @@ const SaveChanges = (targetid) => {
     console.log(updatedinput);
     console.log("No url");
   }
-  const task_url = "";
+  const task_url =
+    "https://kctbs.ac.in/wp-content/uploads/2014/11/default-placeholder.png";
   passable = { ...passable, task_url };
   state.taskList = StateCopy;
 
-  updateAWS(passable);
+  setTimeout(reload_resolver(passable), 10);
+  // updateAWS(passable);
   // updateLocalStorage();
   location.reload();
 };
