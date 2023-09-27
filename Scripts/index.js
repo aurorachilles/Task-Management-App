@@ -77,8 +77,7 @@ const updateLocalStorage = () => {
 const postIntoAWS = (obj) => {
   const requestHeaders = {
     method: "POST",
-    headers: {},
-    body: obj,
+    body: JSON.stringify(obj),
   };
   console.log(requestHeaders);
   fetch(
@@ -93,7 +92,23 @@ const postIntoAWS = (obj) => {
     });
 };
 
-const deleteIntoAWS = () => {};
+const deleteFromAWS = (obj) => {
+  const requestHeaders = {
+    method: "DELETE",
+    body: JSON.stringify(obj),
+  };
+  console.log(requestHeaders);
+  fetch(
+    "https://nij8z6ztle.execute-api.ap-south-1.amazonaws.com/Post_Initial_test",
+    requestHeaders
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data).catch((err) => {
+        console.error("Fetch error:", err);
+      });
+    });
+};
 
 const loadInitialData = () => {
   //initial
@@ -177,7 +192,7 @@ const deleteTask = (e) => {
   const removeTask = state.taskList.filter(({ id }) => id !== targetId);
 
   state.taskList = removeTask;
-  updateLocalStorage();
+  deleteFromAWS({ id: targetId });
 
   if (type === "BUTTON") {
     return e.target.parentNode.parentNode.parentNode.parentNode.removeChild(
@@ -303,12 +318,13 @@ const openingEditTask = (e) => {
     ({ id }) => id === e.target.getAttribute("name")
   );
   const formEdit = document.getElementById("FormforEdit");
-
+  //This basically fetches the already typed values in the field
   formEdit.childNodes[1].childNodes[3].value = targetid.url;
   formEdit.childNodes[3].childNodes[3].value = targetid.title;
   formEdit.childNodes[5].childNodes[3].value = targetid.type;
   formEdit.childNodes[7].childNodes[3].value = targetid.description;
 
+  //calling this function to save the changes that are being typed in the field
   const butt = (document.getElementById("editButtonSubmit").onclick =
     function () {
       SaveChanges(targetid);
@@ -319,6 +335,9 @@ const SaveChanges = (targetid) => {
   const formEdit = document.getElementById("FormforEdit");
   let StateCopy = state.taskList;
   console.log(StateCopy);
+
+  //this part basically reads the edited fields and forms a JSON
+  //if statement is present to either pick or drop the URL
   if (document.getElementById("url_edit") !== "") {
     const updatedinput = {
       urlUp: document.getElementById("url_edit").value,
@@ -327,16 +346,19 @@ const SaveChanges = (targetid) => {
       typeUp: document.getElementById("tags_edit").value,
     };
 
-    StateCopy = StateCopy.map((tasks) =>
-      tasks.id === targetid.id
-        ? {
-            id: tasks.id,
-            title: updatedinput.titleUp,
-            description: updatedinput.descriptionUp,
-            type: updatedinput.typeUp,
-            url: updatedinput.urlUp,
-          }
-        : tasks
+    //a mapping function that matches the passes modal target id and list tasks to map and update the values simultatneously
+    StateCopy = StateCopy.map(
+      (tasks) =>
+        tasks.id === targetid.id
+          ? {
+              id: tasks.id,
+              title: updatedinput.titleUp,
+              description: updatedinput.descriptionUp,
+              type: updatedinput.typeUp,
+              url: updatedinput.urlUp,
+            }
+          : tasks
+      // above, if the target id matches? make update: don't
     );
     console.log(updatedinput);
     console.log("url");
