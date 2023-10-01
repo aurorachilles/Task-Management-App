@@ -329,13 +329,6 @@ const updateAWS = (obj) => {
     });
 };
 
-async function reload_resolver(obj) {
-  let updateprom = new Promise(function res() {
-    updateAWS(obj);
-    resolve("returned");
-  });
-}
-
 // CODE FOR RESETTINGFORM
 const resetForm = (e) => {
   if (!e) e = window.event;
@@ -425,8 +418,8 @@ const SaveChanges = (targetid) => {
   passable = { ...passable, task_url };
   state.taskList = StateCopy;
 
-  setTimeout(reload_resolver(passable), 10);
+  setTimeout(updateAWS(passable), 10);
   // updateAWS(passable);
   // updateLocalStorage();
-  location.reload();
+  // location.reload();
 };
